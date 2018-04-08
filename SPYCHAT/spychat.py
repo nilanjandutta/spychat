@@ -9,6 +9,21 @@ print "Hello detective"
 print "Welcome to the spy world!"
 print "Let\'s get started"
 
+def security():
+    username = raw_input("Enter your username: ")
+    password = raw_input("Enter your password: ")
+    checkpassword(username, password)
+def checkpassword(use, pwd):
+    if use == "python" and pwd == "spychat":
+        login(use)
+    else:
+        print "Your username and/or password was incorrect"
+        security()
+def login(use):
+    print "Welcome " + use
+    print "You have successfully logged in!"
+security()
+
 status_message = ["Today is very Beautiful","Good Morning!","Stay disconnected"]
 friend1=Spy("John","Mr.",25,3.3)
 friend2=Spy("Mohan","Mr.",29,3.9)
