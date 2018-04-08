@@ -1,6 +1,8 @@
-from spy_base import spy
+from spy_base import spy, Spy,ChatMessage
 from steganography.steganography import Steganography #from stegnography library and stegnography object , Stegnography module is called
 from datetime import datetime #gives the current date and time
+import csv #import details from csv file 
+
 date = datetime.now()
 print date
 print "Hello detective"
@@ -8,7 +10,20 @@ print "Welcome to the spy world!"
 print "Let\'s get started"
 
 status_message = ["Today is very Beautiful","Good Morning!","Stay disconnected"]
-friends=[{'name': 'Johnny','age':22,'rating':3.5,'is_online':True, 'chats' :[]},{'name': 'Sparrow','age':24,'rating':2.5,'is_online':True, 'chats':[]}]
+friend1=Spy("John","Mr.",25,3.3)
+friend2=Spy("Mohan","Mr.",29,3.9)
+friends=[friend1,friend2]
+
+def load_friends():
+    with open('friends.csv', 'rb') as friends_data:
+        reader = csv.reader(friends_data)
+        next(reader) #skip the header row of the csv file
+
+        for row in reader:
+            friend = Spy(name=row[0],salutation=row[1],age=[2],rating=[3])
+            friends.append(friend)
+
+load_friends() #load the list of all rows of csv file
 
 def add_status(a_status):
     if a_status != None:
@@ -30,28 +45,28 @@ def add_status(a_status):
         new_status=status_message[user_choice-1]
         updated_status=new_status
         return updated_status
+
 #definining method add_friend
 def add_friend():
-    friend = {
-        'name': ". ",
-        'age': 0,
-        'rating': 0.0,
-        'is_online': True,
-        'chats': []
-    }
-    friend['name']=raw_input(" What is Your Name? ")
-    friend['age']=input(" What is your age? ")
-    friend['rating']=input(" What is your current spy rating? ")
-    if len(friend['name'])>2 and 50>(friend['age'])>5 and friend['rating']>spy['rating']:
-        friends.append(friend)
+    friend = Spy("","",0,0.0)
+    friend.name = raw_input(" What is Your Name? ")
+    friend.salutation = raw_input("What should we call you? ")
+    friend.age = input(" What is your age? ")
+    friend.rating = input(" What is your current spy rating? ")
+    friend.is_online = True
+    if len(friend.name)>2 and 50>(friend.age)>5 and friend.rating>spy.rating:
+        with open('friends.csv','a')as friends_data:
+            writer = csv.writer(friends_data)
+            writer.writerow( [friend.name, friend.salutation, friend.age, friend.rating, friend.is_online] )
     else:
         print("Sorry! Friend cannot be added ")
     return len(friends)
 
+#defining function select_friend
 def select_friend():
     serial_no = 1
     for friend in friends:
-        print str(serial_no) + "  " + friend['name']
+        print str(serial_no) + "  " + friend.name
         serial_no = serial_no + 1
     user_selected_friend = input("Enter your choice : ")
     user_selected_friend_index = user_selected_friend -1
@@ -65,13 +80,10 @@ def send_message():
     secret_text = raw_input(" What is your secret text? ")
     output_path = "output.jpg"
     Steganography.encode(original_image,output_path,secret_text) #call from Stegnography library
-    new_chat = {
-        "messsage": secret_text,
-        "time" : datetime.now(),
-        "sent_by_me": True
-    }
-    friends[selected_friend]['chats'].append(new_chat)
+    new_chat = ChatMessage(secret_text,True)
+    friends[selected_friend].chats.append(new_chat)
     print "You made a secured message!"
+
 
 #defining function read_message
 def read_message():
@@ -79,6 +91,10 @@ def read_message():
     output_path = raw_input("Which image you want to decode? ")
     secret_text = Steganography.decode(output_path)
     print "Secret text is : " + secret_text
+    new_chat= ChatMessage(secret_text,False)
+
+    friends[selected_friend].chats.append(new_chat)
+    print("Your Secret Message has been saved")
 
 
 #defining funtion lets_chat
@@ -109,42 +125,39 @@ spy_exist=raw_input("Are You a new user? Y/N ")  #choose you are new user or old
 
 
 if spy_exist.upper()=="N":
-    print "Welcome Back " + spy['name'] + " age : " + str(spy['age']) + " rating: " + str(spy['rating'])
-    lets_chat(spy['name'],spy['age'],spy['rating']) #details are being called from dictionary
+    print "Welcome Back " + spy.name + " age : " + str(spy.age) + " rating: " + str(spy.rating)
+    lets_chat(spy.name,spy.age,spy.rating) #details are being called from dictionary
 
 elif spy_exist.upper()=="Y":
-    spy={
-        'name': " ",
-        'age':0,
-        'rating' :0.0
-    } # dictionray import
+    spy= Spy("","",0,0.0)
+
 
 
 # gives the details of a new spy
-    spy['name']=raw_input(" What is your name? ")
-    if len(spy['name'])>2:
-        print " Welcome " + spy['name'] + " Glad to see you! "
+    spy.name=raw_input(" What is your name? ")
+    if len(spy.name)>2:
+        print " Welcome " + spy.name + " Glad to see you! "
         spy_salutation=raw_input(" What should we call you? Mr/Ms ")
         if spy_salutation=="Mr." or spy_salutation=="Ms.":
-            spy['name']=spy_salutation + " " + spy['name']
-            print " Great! " + spy['name'] + " Tell us some more about you.."
-            spy['age']=input(" What is your age? ")
-            if 55>spy['age']>5:
+            spy.name=spy_salutation + " " + spy.name
+            print " Great! " + spy.name + " Tell us some more about you.."
+            spy.age=input(" What is your age? ")
+            if 55>spy.age>5:
                 print " Your passed the age criteria "
-                spy['rating']=input(" What is your current spy rating? ")
-                if spy['rating']>=5.0:
+                spy.rating=input(" What is your current spy rating? ")
+                if spy.rating>=5.0:
                     print " Outstanding spy "
-                elif 5.0>spy['rating']>=4.0:
+                elif 5.0>spy.rating>=4.0:
                     print " Great Spy "
-                elif 4.0>spy['rating']>=3.0:
+                elif 4.0>spy.rating>=3.0:
                     print " Average spy "
-                elif 3.0>spy['rating']>=2.0:
+                elif 3.0>spy.rating>=2.0:
                     print " You are on your border line "
                 else:
                     print " Sorry! You are not suitable for this "
                 spy_is_online=True
-                print "Authentication Complete! Welcome " + spy['name'] + "Age: "+ str(spy['age'])+ "Having a Rating of :" + str(spy['rating'])
-                lets_chat(spy['name'],spy['age'],spy['rating'])
+                print "Authentication Complete! Welcome " + spy.name + "Age: "+ str(spy.age)+ "Having a Rating of :" + str(spy.rating)
+                lets_chat(spy.name,spy.age,spy.rating)
             else:
                 print "You are too small or too old to be trained"
         else:
