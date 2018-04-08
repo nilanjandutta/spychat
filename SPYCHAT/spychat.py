@@ -1,7 +1,7 @@
 from spy_base import spy, Spy,ChatMessage
 from steganography.steganography import Steganography #from stegnography library and stegnography object , Stegnography module is called
 from datetime import datetime #gives the current date and time
-import csv #import details from csv file 
+import csv
 
 date = datetime.now()
 print date
@@ -9,7 +9,7 @@ print "Hello detective"
 print "Welcome to the spy world!"
 print "Let\'s get started"
 
-def security():
+def ask():
     username = raw_input("Enter your username: ")
     password = raw_input("Enter your password: ")
     checkpassword(username, password)
@@ -18,27 +18,39 @@ def checkpassword(use, pwd):
         login(use)
     else:
         print "Your username and/or password was incorrect"
-        security()
+        ask()
 def login(use):
     print "Welcome " + use
     print "You have successfully logged in!"
-security()
+ask()
 
 status_message = ["Today is very Beautiful","Good Morning!","Stay disconnected"]
 friend1=Spy("John","Mr.",25,3.3)
 friend2=Spy("Mohan","Mr.",29,3.9)
 friends=[friend1,friend2]
+messages=[]
 
 def load_friends():
     with open('friends.csv', 'rb') as friends_data:
         reader = csv.reader(friends_data)
-        next(reader) #skip the header row of the csv file
+        next(reader)
 
         for row in reader:
             friend = Spy(name=row[0],salutation=row[1],age=[2],rating=[3])
             friends.append(friend)
 
-load_friends() #load the list of all rows of csv file
+load_friends()
+
+def load_messages():
+    with open('messages.csv', 'rb') as message_data:
+        reader = csv.reader(message_data)
+        next(reader)
+
+        for row in reader:
+            message = Spy(sender_name=row[0],message=row[1])
+            messages.append(message)
+
+load_messages()
 
 def add_status(a_status):
     if a_status != None:
@@ -97,6 +109,9 @@ def send_message():
     Steganography.encode(original_image,output_path,secret_text) #call from Stegnography library
     new_chat = ChatMessage(secret_text,True)
     friends[selected_friend].chats.append(new_chat)
+    with open('messages.csv', 'a')as message_data:
+        writer = csv.writer(message_data)
+        writer.writerow([secret_text])
     print "You made a secured message!"
 
 
