@@ -1,3 +1,6 @@
+import sys
+sys.stdout.write("\033[1;31m")
+print "All following prints will be red ..."
 from spy_base import spy, Spy,ChatMessage
 from steganography.steganography import Steganography #from stegnography library and stegnography object , Stegnography module is called
 from datetime import datetime #gives the current date and time
