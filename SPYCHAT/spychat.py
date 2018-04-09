@@ -55,6 +55,20 @@ def load_messages():
 
 load_messages()
 
+def read_chat_history():
+    read_for = select_friend()
+
+    for chat in friends[read_for].chats:
+        if chat.sent_by_me:
+            print('[%s]' % chat.time.strftime("%d %B %Y"))
+            print('%s' % 'you said : ')
+            print '%s' % chat.message
+        else:
+            print('[%s]' % chat.time.strftime("%d %B %Y"))
+            print('%s said : ' % friends[read_for].name)
+            print '%s' % chat.message
+
+
 def add_status(a_status):
     if a_status != None:
         print "Your current status is " + a_status
@@ -136,7 +150,7 @@ def lets_chat(spy_name,spy_age,spy_rating):
     current_status = None
     show_menu = True
     while show_menu:
-        choice=input("What do you want to do? \n 1.Add a status \n 2. Add a Friend \n 3. Send a Message \n 4. Read a message \n 0. Exit")
+        choice=input("What do you want to do? \n 1.Add a status \n 2. Add a Friend \n 3. Send a Message \n 4. Read a message \n 5. Read Chat History \n 0. Exit")
         if choice == 1:
             current_status = add_status(current_status)
             print "Updated status is : " + current_status
@@ -147,6 +161,8 @@ def lets_chat(spy_name,spy_age,spy_rating):
             send_message()
         elif choice == 4:
             read_message()
+        elif choice == 5;
+            read_chat_history()
 
         elif choice == 0:
             show_menu=False
